@@ -2,7 +2,7 @@ import numpy as np
 
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import session
+from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
@@ -91,3 +91,6 @@ def tobs():
         tobs_dict['Temperature'] = tobs
         tobs_list.append(tobs_dict)
     return jsonify(tobs_list)
+
+if __name__ == '__main__':
+    app.run(debug=True)
