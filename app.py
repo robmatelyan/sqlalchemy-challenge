@@ -6,10 +6,10 @@ from sqlalchemy.orm import session
 from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
-import datatime as dt
+import datetime as dt
 
 # Databse Setup
-engine = create_engine("sqlite:///Resources_copy/hawaii.sqlite)
+engine = create_engine("sqlite:///Resources_copy/hawaii.sqlite")
 
 # Reflect existing database into new model
 Base = automap_base()
@@ -91,4 +91,3 @@ def tobs():
         tobs_dict['Temperature'] = tobs
         tobs_list.append(tobs_dict)
     return jsonify(tobs_list)
-    
