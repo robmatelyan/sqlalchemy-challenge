@@ -32,8 +32,8 @@ def welcome():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start><br/>"
-        f"/api/v1.0/<start>/<end>"
+        f"/api/v1.0/start_date<br/>"
+        f"/api/v1.0/start_date/end_date</br>"
     )
 
 # Flask Routes
@@ -91,6 +91,42 @@ def tobs():
         tobs_dict['Temperature'] = tobs
         tobs_list.append(tobs_dict)
     return jsonify(tobs_list)
+
+@app.route("/api/v1.0/<start_date>")
+def start_only(start_date):
+    #create session
+    session = Session(engine)
+
+    results = session.query(func.min(measurement.tobs), func.max(measurement.tobs), func.avg(measurement.tobs)).\
+    filter(measurement.date >= start_date).all()
+    session.close()
+    
+    start_date_list = []
+    for min, max, avg in results:
+        start_date_dict = {}
+        start_date_dict['min_temp'] = min
+        start_date_dict['max_temp'] = max
+        start_date_dict['avg_temp'] = avg
+        start_date_list.append(start_date_dict)
+    return jsonify(start_date_list)
+
+@app.route("/api/v1.0/<start_date>/<end_date>")
+def start_end_date(start_date,end_date):
+    #create session
+    session = Session(engine)
+
+    results = session.query(func.min(measurement.tobs), func.max(measurement.tobs), func.avg(measurement.tobs)).\
+    filter(measurement.date >= start_date).filter(measurement.date <= end_date).all()
+    session.close()
+
+    start_end_list = []
+    for min, max, avg in results:
+        start_end_dict = {}
+        start_end_dict['min_temp'] = min
+        start_end_dict['max_temp'] = max
+        start_end_dict['avg_temp'] = avg
+        start_end_list.append(start_end_dict)
+    return jsonify(start_end_list)
 
 if __name__ == '__main__':
     app.run(debug=True)
